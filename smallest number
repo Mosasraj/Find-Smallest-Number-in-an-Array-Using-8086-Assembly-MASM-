@@ -1,0 +1,65 @@
+# Find Smallest Number in an Array Using 8086 Assembly (MASM)
+
+## Aim / Objective
+To write an 8086 assembly language program using MASM that finds the smallest number in a given array of N elements and displays it on the screen.
+
+## Requirements / Software Used
+- MASM 8086 Assembler  
+- LINK.EXE (MASM Linker)  
+- DOSBox (to run MASM programs)  
+- Windows PC  
+
+## Algorithm / Procedure
+1. Initialize the data segment and load the array of numbers.  
+2. Assume the first element as the smallest number.  
+3. Compare each element of the array with the current smallest.  
+4. Update the smallest number if a smaller value is found.  
+5. Store the smallest number in a memory location.  
+6. Display the smallest number on the screen using DOS interrupt `INT 21H`.  
+7. Exit the program cleanly using DOS interrupt `INT 21H`.  
+
+## Program Code
+```asm
+DATA SEGMENT
+    ARR DB 25, 14, 67, 9, 31    ; Array elements
+    N   DB 5                     ; Number of elements
+    SMALL DB ?                   ; To store smallest number
+DATA ENDS
+
+CODE SEGMENT
+ASSUME CS:CODE, DS:DATA
+
+START:
+    MOV AX, DATA
+    MOV DS, AX
+
+    MOV CL, N
+    LEA SI, ARR
+    MOV AL,[SI]
+    INC SI
+    DEC CL
+
+NEXT_ELEMENT:
+    CMP AL,[SI]
+    JBE SKIP_UPDATE
+    MOV AL,[SI]
+SKIP_UPDATE:
+    INC SI
+    DEC CL
+    JNZ NEXT_ELEMENT
+
+    MOV SMALL, AL
+
+    ; Display smallest number
+    MOV DL, SMALL
+    ADD DL, 30H
+    MOV AH, 02H
+    INT 21H
+
+    ; Exit program
+    MOV AH, 4CH
+    INT 21H
+
+CODE ENDS
+END START
+```
